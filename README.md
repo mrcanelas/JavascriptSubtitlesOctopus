@@ -1,4 +1,4 @@
-[![Actions Status](https://github.com/jellyfin/JavascriptSubtitlesOctopus/actions/workflows/emscripten.yml/badge.svg)](https://github.com/jellyfin/JavascriptSubtitlesOctopus/actions/workflows/emscripten.yml?query=branch%3Amaster+event%3Apush)
+[![Actions Status](https://github.com/Stremio/JavascriptSubtitlesOctopus/actions/workflows/emscripten.yml/badge.svg)](https://github.com/Stremio/JavascriptSubtitlesOctopus/actions/workflows/emscripten.yml?query=branch%3Amaster+event%3Apush)
 
 
 SubtitlesOctopus displays subtitles in .ass format and easily integrates with HTML5 videos.
@@ -6,8 +6,8 @@ Since it uses [libass](https://github.com/libass/libass), SubtitlesOctopus suppo
 SSA/ASS features and enables you to get consistent results in authoring and web-playback,
 provided libass is also used locally.
 
-[ONLINE DEMO](https://jellyfin.github.io/JavascriptSubtitlesOctopus/videojs.html)
-/ [other examples with demo](https://jellyfin.github.io/JavascriptSubtitlesOctopus/)
+[ONLINE DEMO](https://stremio.github.io/JavascriptSubtitlesOctopus/videojs.html)
+/ [other examples with demo](https://stremio.github.io/JavascriptSubtitlesOctopus/)
 
 ## Features
 
@@ -49,7 +49,7 @@ var instance = new SubtitlesOctopus(options);
 After that SubtitlesOctopus automatically "connects" to your video and it starts
 to display subtitles. You can use it with any HTML5 player.
 
-[See other examples](https://github.com/jellyfin/JavascriptSubtitlesOctopus/tree/gh-pages/).
+[See other examples](https://github.com/Stremio/JavascriptSubtitlesOctopus/tree/gh-pages/).
 
 ### Embedded assets
 If your application cannot serve package asset files directly, such as packaged
@@ -65,8 +65,8 @@ exported as source strings, and the default worker source already embeds the was
 binary. The wasm and default font are also exported as base64 strings:
 
 ```javascript
-var SubtitlesOctopus = require('@jellyfin/libass-wasm');
-var assets = require('@jellyfin/libass-wasm/assets');
+var SubtitlesOctopus = require('@stremio/libass-wasm');
+var assets = require('@stremio/libass-wasm/assets');
 
 function decodeBase64(base64) {
     var binary = atob(base64);
@@ -273,7 +273,7 @@ with a `.br` extension.
 
 ### Get the Source
 
-Run `git clone --recursive https://github.com/jellyfin/JavascriptSubtitlesOctopus.git`
+Run `git clone --recursive https://github.com/Stremio/JavascriptSubtitlesOctopus.git`
 
 ### Build inside a Container
 #### Docker
