@@ -1,4 +1,4 @@
-name: Build & Publish to NPM
+name: Build & Publish GitHub Release
 
 on:
   push:
@@ -6,12 +6,11 @@ on:
       - v*
 
 permissions:
-  id-token: write  # Required for OIDC (npm trusted publishing)
-  contents: read
+  contents: write
 
 jobs:
   build:
-    name: Build & Publish to NPM
+    name: Build & Publish GitHub Release
     runs-on: ubuntu-latest
 
     steps:
@@ -31,12 +30,29 @@ jobs:
       run: |
         docker run --rm --env LC_ALL=C.UTF-8 -v "${PWD}":/code libass/jso:latest
 
-    - name: Setup node environment for NPM
+    - name: Setup Node.js
       uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
       with:
         node-version: 24
-        registry-url: 'https://registry.npmjs.org'
         check-latest: true
 
-    - name: Publish to NPM
-      run: SKIP_PREPARE=1 npm publish --access public
+    - name: Build Embedded Assets
+      run: node scripts/build-assets.js
+
+    - name: Pack Release Assets
+      run: |
+        mkdir -p release-artifacts
+        npm pack --ignore-scripts --pack-destination release-artifacts
+        tar -czf "release-artifacts/libass-wasm-${GITHUB_REF_NAME}-dist-js.tar.gz" -C dist js
+
+    - name: Publish GitHub Release
+      env:
+        GH_TOKEN: ${{ github.token }}
+      run: |
+        if gh release view "${GITHUB_REF_NAME}" > /dev/null 2>&1; then
+          gh release upload "${GITHUB_REF_NAME}" release-artifacts/* --clobber
+        else
+          gh release create "${GITHUB_REF_NAME}" release-artifacts/* \
+            --title "${GITHUB_REF_NAME}" \
+            --generate-notes
+        fi
