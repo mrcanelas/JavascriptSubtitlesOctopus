@@ -53,11 +53,11 @@ to display subtitles. You can use it with any HTML5 player.
 
 ### Embedded assets
 If your application cannot serve package asset files directly, such as packaged
-TV apps or older WebViews, the package build generates a self-contained asset
-export:
+TV apps or older WebViews, the release workflow generates a self-contained asset
+export. You can also generate it locally after building:
 
 ```sh
-npm run prepare
+node scripts/build-assets.js
 ```
 
 This creates `dist/js/subtitles-octopus-assets.js`. The JavaScript workers are
