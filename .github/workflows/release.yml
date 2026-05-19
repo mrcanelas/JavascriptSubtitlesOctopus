@@ -4,9 +4,21 @@ on:
   push:
     tags:
       - v*
+  release:
+    types:
+      - published
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Release tag to build and upload assets for
+        required: true
+        type: string
 
 permissions:
   contents: write
+
+env:
+  RELEASE_TAG: ${{ github.event.release.tag_name || inputs.tag || github.ref_name }}
 
 jobs:
   build:
@@ -16,6 +28,8 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+      with:
+        ref: ${{ github.event.release.tag_name || inputs.tag || github.ref }}
 
     - name: Checkout submodules
       run: |
@@ -43,16 +57,16 @@ jobs:
       run: |
         mkdir -p release-artifacts
         npm pack --ignore-scripts --pack-destination release-artifacts
-        tar -czf "release-artifacts/libass-wasm-${GITHUB_REF_NAME}-dist-js.tar.gz" -C dist js
+        tar -czf "release-artifacts/libass-wasm-${RELEASE_TAG}-dist-js.tar.gz" -C dist js
 
     - name: Publish GitHub Release
       env:
         GH_TOKEN: ${{ github.token }}
       run: |
-        if gh release view "${GITHUB_REF_NAME}" > /dev/null 2>&1; then
-          gh release upload "${GITHUB_REF_NAME}" release-artifacts/* --clobber
+        if gh release view "${RELEASE_TAG}" > /dev/null 2>&1; then
+          gh release upload "${RELEASE_TAG}" release-artifacts/* --clobber
         else
-          gh release create "${GITHUB_REF_NAME}" release-artifacts/* \
-            --title "${GITHUB_REF_NAME}" \
+          gh release create "${RELEASE_TAG}" release-artifacts/* \
+            --title "${RELEASE_TAG}" \
             --generate-notes
         fi
